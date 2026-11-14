@@ -1,0 +1,2603 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Turnpike Analyst Enterprise Platform API",
+    "description": "Production-ready RESTful API backend for Turnpike Analyst covering ECM migrations (JAMES WEBB Server), AI Agent tools (Agent P8), training courses, consultations, CMS/blogging, lead capture, and role-based administration.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/v1/auth/register": {
+      "post": {
+        "tags": [
+          "Authentication & Token Security"
+        ],
+        "summary": "Register User",
+        "operationId": "register_user_api_v1_auth_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication & Token Security"
+        ],
+        "summary": "Login",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_login_api_v1_auth_login_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh-token": {
+      "post": {
+        "tags": [
+          "Authentication & Token Security"
+        ],
+        "summary": "Refresh Token",
+        "operationId": "refresh_token_api_v1_auth_refresh_token_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Authentication & Token Security"
+        ],
+        "summary": "Read Users Me",
+        "operationId": "read_users_me_api_v1_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/services/": {
+      "get": {
+        "tags": [
+          "Enterprise Services Catalog"
+        ],
+        "summary": "List Services",
+        "operationId": "list_services_api_v1_services__get",
+        "parameters": [
+          {
+            "name": "parent_category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ParentCategory"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by parent category",
+              "title": "Parent Category"
+            },
+            "description": "Filter by parent category"
+          },
+          {
+            "name": "sub_service_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/SubServiceType"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by sub-service type",
+              "title": "Sub Service Type"
+            },
+            "description": "Filter by sub-service type"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ServiceResponse"
+                  },
+                  "title": "Response List Services Api V1 Services  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Enterprise Services Catalog"
+        ],
+        "summary": "Create New Service",
+        "operationId": "create_new_service_api_v1_services__post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/services/{slug}": {
+      "get": {
+        "tags": [
+          "Enterprise Services Catalog"
+        ],
+        "summary": "Get Service",
+        "operationId": "get_service_api_v1_services__slug__get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/services/{service_id}": {
+      "put": {
+        "tags": [
+          "Enterprise Services Catalog"
+        ],
+        "summary": "Update Existing Service",
+        "operationId": "update_existing_service_api_v1_services__service_id__put",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "service_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Service Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServiceUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServiceResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Enterprise Services Catalog"
+        ],
+        "summary": "Delete Existing Service",
+        "operationId": "delete_existing_service_api_v1_services__service_id__delete",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "service_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Service Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products/": {
+      "get": {
+        "tags": [
+          "Proprietary Products (JAMES WEBB & Agent P8)"
+        ],
+        "summary": "List Products",
+        "operationId": "list_products_api_v1_products__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProductResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Products Api V1 Products  Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/products/request-demo": {
+      "post": {
+        "tags": [
+          "Proprietary Products (JAMES WEBB & Agent P8)"
+        ],
+        "summary": "Request Product Demo",
+        "operationId": "request_product_demo_api_v1_products_request_demo_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DemoRequestCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/leads/book-call": {
+      "post": {
+        "tags": [
+          "Leads & Consultation Scheduling"
+        ],
+        "summary": "Book Call Appointment",
+        "operationId": "book_call_appointment_api_v1_leads_book_call_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookCallCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/leads/submit-needs": {
+      "post": {
+        "tags": [
+          "Leads & Consultation Scheduling"
+        ],
+        "summary": "Submit Enterprise Requirements",
+        "operationId": "submit_enterprise_requirements_api_v1_leads_submit_needs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitNeedsCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/leads/": {
+      "get": {
+        "tags": [
+          "Leads & Consultation Scheduling"
+        ],
+        "summary": "List Enterprise Leads",
+        "operationId": "list_enterprise_leads_api_v1_leads__get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/LeadStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by lead status",
+              "title": "Status"
+            },
+            "description": "Filter by lead status"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LeadResponse"
+                  },
+                  "title": "Response List Enterprise Leads Api V1 Leads  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/leads/{lead_id}/status": {
+      "patch": {
+        "tags": [
+          "Leads & Consultation Scheduling"
+        ],
+        "summary": "Patch Lead Status",
+        "operationId": "patch_lead_status_api_v1_leads__lead_id__status_patch",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "lead_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Lead Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeadStatusUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/training/courses": {
+      "get": {
+        "tags": [
+          "Training Courses & Instructor Platform"
+        ],
+        "summary": "List Training Courses",
+        "operationId": "list_training_courses_api_v1_training_courses_get",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CourseCategory"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by training category",
+              "title": "Category"
+            },
+            "description": "Filter by training category"
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/CourseLevel"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by course difficulty level",
+              "title": "Level"
+            },
+            "description": "Filter by course difficulty level"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CourseResponse"
+                  },
+                  "title": "Response List Training Courses Api V1 Training Courses Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/training/courses/{slug}": {
+      "get": {
+        "tags": [
+          "Training Courses & Instructor Platform"
+        ],
+        "summary": "Get Course Curriculum Details",
+        "operationId": "get_course_curriculum_details_api_v1_training_courses__slug__get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/training/become-instructor": {
+      "post": {
+        "tags": [
+          "Training Courses & Instructor Platform"
+        ],
+        "summary": "Apply To Become Instructor",
+        "operationId": "apply_to_become_instructor_api_v1_training_become_instructor_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InstructorApplicationCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstructorApplicationResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/training/instructor-applications": {
+      "get": {
+        "tags": [
+          "Training Courses & Instructor Platform"
+        ],
+        "summary": "Review Instructor Applications",
+        "operationId": "review_instructor_applications_api_v1_training_instructor_applications_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ApplicationStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by review status",
+              "title": "Status"
+            },
+            "description": "Filter by review status"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/InstructorApplicationResponse"
+                  },
+                  "title": "Response Review Instructor Applications Api V1 Training Instructor Applications Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/blogs/": {
+      "get": {
+        "tags": [
+          "CMS Blog Articles & Insights"
+        ],
+        "summary": "List Articles",
+        "operationId": "list_articles_api_v1_blogs__get",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/BlogCategory"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by blog category",
+              "title": "Category"
+            },
+            "description": "Filter by blog category"
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filter by specific keyword tag",
+              "title": "Tag"
+            },
+            "description": "Filter by specific keyword tag"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BlogResponse"
+                  },
+                  "title": "Response List Articles Api V1 Blogs  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CMS Blog Articles & Insights"
+        ],
+        "summary": "Publish Article",
+        "operationId": "publish_article_api_v1_blogs__post",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlogCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/blogs/{slug}": {
+      "get": {
+        "tags": [
+          "CMS Blog Articles & Insights"
+        ],
+        "summary": "Get Article Detail",
+        "operationId": "get_article_detail_api_v1_blogs__slug__get",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Slug"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlogResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/newsletter/subscribe": {
+      "post": {
+        "tags": [
+          "Newsletter Subscriptions"
+        ],
+        "summary": "Subscribe To Newsletter",
+        "operationId": "subscribe_to_newsletter_api_v1_newsletter_subscribe_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewsletterSubscribe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsletterResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/newsletter/subscribers": {
+      "get": {
+        "tags": [
+          "Newsletter Subscriptions"
+        ],
+        "summary": "List Newsletter Subscribers",
+        "operationId": "list_newsletter_subscribers_api_v1_newsletter_subscribers_get",
+        "security": [
+          {
+            "OAuth2PasswordBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewsletterResponse"
+                  },
+                  "title": "Response List Newsletter Subscribers Api V1 Newsletter Subscribers Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "System Health Check"
+        ],
+        "summary": "Root Health Check",
+        "operationId": "root_health_check__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApplicationStatus": {
+        "type": "string",
+        "enum": [
+          "SUBMITTED",
+          "UNDER_REVIEW",
+          "ACCEPTED",
+          "REJECTED"
+        ],
+        "title": "ApplicationStatus"
+      },
+      "BlogCategory": {
+        "type": "string",
+        "enum": [
+          "UNCATEGORIZED",
+          "ICC",
+          "KOFAX",
+          "HYLAND",
+          "AI_INNOVATION"
+        ],
+        "title": "BlogCategory"
+      },
+      "BlogCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Title"
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Slug"
+          },
+          "category": {
+            "$ref": "#/components/schemas/BlogCategory",
+            "default": "UNCATEGORIZED"
+          },
+          "author": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Author"
+          },
+          "content_html": {
+            "type": "string",
+            "minLength": 10,
+            "title": "Content Html"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 10,
+            "title": "Summary"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags"
+          },
+          "is_published": {
+            "type": "boolean",
+            "title": "Is Published",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "slug",
+          "author",
+          "content_html",
+          "summary"
+        ],
+        "title": "BlogCreate"
+      },
+      "BlogResponse": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Title"
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Slug"
+          },
+          "category": {
+            "$ref": "#/components/schemas/BlogCategory",
+            "default": "UNCATEGORIZED"
+          },
+          "author": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Author"
+          },
+          "content_html": {
+            "type": "string",
+            "minLength": 10,
+            "title": "Content Html"
+          },
+          "summary": {
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 10,
+            "title": "Summary"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags"
+          },
+          "is_published": {
+            "type": "boolean",
+            "title": "Is Published",
+            "default": true
+          },
+          "_id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Published At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "slug",
+          "author",
+          "content_html",
+          "summary"
+        ],
+        "title": "BlogResponse"
+      },
+      "Body_login_api_v1_auth_login_post": {
+        "properties": {
+          "grant_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^password$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Grant Type"
+          },
+          "username": {
+            "type": "string",
+            "title": "Username"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "title": "Password"
+          },
+          "scope": {
+            "type": "string",
+            "title": "Scope",
+            "default": ""
+          },
+          "client_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Client Id"
+          },
+          "client_secret": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "format": "password",
+            "title": "Client Secret"
+          }
+        },
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "Body_login_api_v1_auth_login_post"
+      },
+      "BookCallCreate": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          },
+          "company": {
+            "type": "string",
+            "title": "Company"
+          },
+          "department": {
+            "$ref": "#/components/schemas/Department"
+          },
+          "subject": {
+            "type": "string",
+            "title": "Subject",
+            "default": "Book Call Appointment"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "service_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "email",
+          "phone",
+          "company",
+          "department",
+          "message"
+        ],
+        "title": "BookCallCreate"
+      },
+      "CourseCategory": {
+        "type": "string",
+        "enum": [
+          "ECM_TRAINING",
+          "OCP_TRAINING",
+          "CLOUD_DEVOPS",
+          "AI_ML_TRAINING"
+        ],
+        "title": "CourseCategory"
+      },
+      "CourseLevel": {
+        "type": "string",
+        "enum": [
+          "BEGINNER",
+          "INTERMEDIATE",
+          "ADVANCED"
+        ],
+        "title": "CourseLevel"
+      },
+      "CourseResponse": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Title"
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Slug"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CourseCategory"
+          },
+          "duration_hours": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Duration Hours"
+          },
+          "level": {
+            "$ref": "#/components/schemas/CourseLevel"
+          },
+          "curriculum": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Curriculum"
+          },
+          "instructor_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instructor Id"
+          },
+          "price": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Price"
+          },
+          "is_published": {
+            "type": "boolean",
+            "title": "Is Published",
+            "default": true
+          },
+          "_id": {
+            "type": "string",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "slug",
+          "category",
+          "duration_hours",
+          "level",
+          "price"
+        ],
+        "title": "CourseResponse"
+      },
+      "DemoRequestCreate": {
+        "properties": {
+          "product_code": {
+            "$ref": "#/components/schemas/ProductCode"
+          },
+          "full_name": {
+            "type": "string",
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          },
+          "company": {
+            "type": "string",
+            "title": "Company"
+          },
+          "department": {
+            "$ref": "#/components/schemas/Department",
+            "default": "TECHNICAL_TEAM"
+          },
+          "subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subject",
+            "default": "Requesting Product Demo"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_code",
+          "full_name",
+          "email",
+          "phone",
+          "company"
+        ],
+        "title": "DemoRequestCreate"
+      },
+      "Department": {
+        "type": "string",
+        "enum": [
+          "TECHNICAL_TEAM",
+          "MANAGEMENT_TEAM",
+          "HELP_DESK"
+        ],
+        "title": "Department"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "InstructorApplicationCreate": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          },
+          "expertise_areas": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Expertise Areas"
+          },
+          "resume_url": {
+            "type": "string",
+            "title": "Resume Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "email",
+          "phone",
+          "resume_url"
+        ],
+        "title": "InstructorApplicationCreate"
+      },
+      "InstructorApplicationResponse": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          },
+          "expertise_areas": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Expertise Areas"
+          },
+          "resume_url": {
+            "type": "string",
+            "title": "Resume Url"
+          },
+          "_id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ApplicationStatus",
+            "default": "SUBMITTED"
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Submitted At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "email",
+          "phone",
+          "resume_url"
+        ],
+        "title": "InstructorApplicationResponse"
+      },
+      "LeadResponse": {
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/LeadType"
+          },
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 5,
+            "title": "Phone"
+          },
+          "company": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 2,
+            "title": "Company"
+          },
+          "department": {
+            "$ref": "#/components/schemas/Department",
+            "default": "HELP_DESK"
+          },
+          "subject": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 3,
+            "title": "Subject"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 5,
+            "title": "Message"
+          },
+          "service_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Id"
+          },
+          "_id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/LeadStatus",
+            "default": "PENDING"
+          },
+          "sla_reply_deadline": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Sla Reply Deadline"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type",
+          "full_name",
+          "email",
+          "phone",
+          "company",
+          "subject",
+          "message"
+        ],
+        "title": "LeadResponse"
+      },
+      "LeadStatus": {
+        "type": "string",
+        "enum": [
+          "PENDING",
+          "IN_PROGRESS",
+          "RESOLVED",
+          "CANCELLED"
+        ],
+        "title": "LeadStatus"
+      },
+      "LeadStatusUpdate": {
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/LeadStatus"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "title": "LeadStatusUpdate"
+      },
+      "LeadType": {
+        "type": "string",
+        "enum": [
+          "BOOK_CALL",
+          "REQUIREMENT_FORM",
+          "PRODUCT_DEMO"
+        ],
+        "title": "LeadType"
+      },
+      "LoginResponse": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "refresh_token",
+          "user"
+        ],
+        "title": "LoginResponse"
+      },
+      "MessageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "MessageResponse"
+      },
+      "NewsletterResponse": {
+        "properties": {
+          "_id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "subscribed_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Subscribed At"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "NewsletterResponse"
+      },
+      "NewsletterSubscribe": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "title": "NewsletterSubscribe"
+      },
+      "ParentCategory": {
+        "type": "string",
+        "enum": [
+          "APPLICATIONS",
+          "ARTIFICIAL_AUGMENTED_INTELLIGENCE",
+          "BUSINESS_PROCESS",
+          "BUSINESS_SOLUTIONS",
+          "CLOUD",
+          "CONSULTING",
+          "CYBERSECURITY",
+          "DATA_ANALYTICS",
+          "DESIGN_EXPERIENCE",
+          "DIGITAL_MARKETING_INTERACTION",
+          "ENGINEERING",
+          "INFRASTRUCTURE",
+          "SUSTAINABILITY",
+          "TALENT_CLOUD",
+          "DIGITAL_CONTENT_SERVICES"
+        ],
+        "title": "ParentCategory"
+      },
+      "ProductCode": {
+        "type": "string",
+        "enum": [
+          "JAMES_WEBB",
+          "AGENT_P8"
+        ],
+        "title": "ProductCode"
+      },
+      "ProductResponse": {
+        "properties": {
+          "product_code": {
+            "$ref": "#/components/schemas/ProductCode"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "tagline": {
+            "type": "string",
+            "title": "Tagline"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "key_features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Key Features"
+          },
+          "supported_environments": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Environments"
+          },
+          "pricing_tiers": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Pricing Tiers"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "_id": {
+            "type": "string",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_code",
+          "name",
+          "tagline",
+          "description"
+        ],
+        "title": "ProductResponse"
+      },
+      "RefreshTokenRequest": {
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "refresh_token"
+        ],
+        "title": "RefreshTokenRequest"
+      },
+      "ServiceCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Title"
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Slug"
+          },
+          "parent_category": {
+            "$ref": "#/components/schemas/ParentCategory"
+          },
+          "sub_service_type": {
+            "$ref": "#/components/schemas/SubServiceType"
+          },
+          "short_description": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Short Description"
+          },
+          "full_description": {
+            "type": "string",
+            "title": "Full Description"
+          },
+          "supported_platforms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Platforms"
+          },
+          "is_featured": {
+            "type": "boolean",
+            "title": "Is Featured",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "slug",
+          "parent_category",
+          "sub_service_type",
+          "short_description",
+          "full_description"
+        ],
+        "title": "ServiceCreate"
+      },
+      "ServiceResponse": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Title"
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Slug"
+          },
+          "parent_category": {
+            "$ref": "#/components/schemas/ParentCategory"
+          },
+          "sub_service_type": {
+            "$ref": "#/components/schemas/SubServiceType"
+          },
+          "short_description": {
+            "type": "string",
+            "maxLength": 500,
+            "title": "Short Description"
+          },
+          "full_description": {
+            "type": "string",
+            "title": "Full Description"
+          },
+          "supported_platforms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Supported Platforms"
+          },
+          "is_featured": {
+            "type": "boolean",
+            "title": "Is Featured",
+            "default": false
+          },
+          "_id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "slug",
+          "parent_category",
+          "sub_service_type",
+          "short_description",
+          "full_description"
+        ],
+        "title": "ServiceResponse"
+      },
+      "ServiceUpdate": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "parent_category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ParentCategory"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sub_service_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SubServiceType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "short_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Description"
+          },
+          "full_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Full Description"
+          },
+          "supported_platforms": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supported Platforms"
+          },
+          "is_featured": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Featured"
+          }
+        },
+        "type": "object",
+        "title": "ServiceUpdate"
+      },
+      "SubServiceType": {
+        "type": "string",
+        "enum": [
+          "DIGITAL_CONTENT_MIGRATION",
+          "DIGITAL_CONTENT_CAPTURE",
+          "MANAGED_SERVICES",
+          "SOFTWARE_SUPPORT",
+          "BPM_RPA",
+          "CRM_ERP_INTEGRATION",
+          "SEO_MARKETING",
+          "CUSTOM_ENGINEERING"
+        ],
+        "title": "SubServiceType"
+      },
+      "SubmitNeedsCreate": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "phone": {
+            "type": "string",
+            "title": "Phone"
+          },
+          "company": {
+            "type": "string",
+            "title": "Company"
+          },
+          "department": {
+            "$ref": "#/components/schemas/Department"
+          },
+          "subject": {
+            "type": "string",
+            "title": "Subject",
+            "default": "Enterprise Requirement Submission"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "service_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "email",
+          "phone",
+          "company",
+          "department",
+          "message"
+        ],
+        "title": "SubmitNeedsCreate"
+      },
+      "Token": {
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "refresh_token": {
+            "type": "string",
+            "title": "Refresh Token"
+          },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "bearer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "access_token",
+          "refresh_token"
+        ],
+        "title": "Token"
+      },
+      "UserCreate": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "company": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole",
+            "default": "CLIENT"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 8,
+            "title": "Password",
+            "description": "Password must be at least 8 characters long"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "email",
+          "password"
+        ],
+        "title": "UserCreate"
+      },
+      "UserResponse": {
+        "properties": {
+          "full_name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 2,
+            "title": "Full Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "company": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Company"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRole",
+            "default": "CLIENT"
+          },
+          "_id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "is_active": {
+            "type": "boolean",
+            "title": "Is Active",
+            "default": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "full_name",
+          "email"
+        ],
+        "title": "UserResponse"
+      },
+      "UserRole": {
+        "type": "string",
+        "enum": [
+          "ADMIN",
+          "CONSULTANT",
+          "INSTRUCTOR",
+          "CLIENT"
+        ],
+        "title": "UserRole"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": {
+          "password": {
+            "scopes": {},
+            "tokenUrl": "/api/v1/auth/login"
+          }
+        }
+      }
+    }
+  }
+}

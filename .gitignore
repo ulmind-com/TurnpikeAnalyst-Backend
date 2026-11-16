@@ -1,0 +1,39 @@
+# Python / Backend
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.production.local
+
+# Frontend / General
+node_modules/
+.next/
+dist/
+build/
+.DS_Store
+*.log
+.vercel
+.turbo
+.claude/
+backend/firebase_service_account.json
+turnpike-backend/firebase_service_account.json
+
+# TanStack Start / Vite build output and generated route tree
+.output/
+.nitro/
+.tanstack/
+.vinxi/
+**/src/routeTree.gen.ts
+# Intern-uploaded files; never committed
+backend/private_uploads/
+backend/uploads/
+turnpike-backend/private_uploads/
+turnpike-backend/uploads/

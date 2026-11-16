@@ -1,0 +1,108 @@
+# Render blueprint for the API (Turnpike Backend).
+#
+# The web app and the admin console deploy to Vercel from the same
+# repository; only the backend lives here. Set `rootDir` so Render builds
+# from turnpike-backend/ and ignores the rest of the monorepo.
+#
+# Every value marked `sync: false` must be entered in the Render dashboard.
+# None of them belong in this file — it is committed.
+
+services:
+  - type: web
+    name: turnpike-api
+    runtime: python
+    plan: free
+    rootDir: .
+    buildCommand: pip install -r requirements.txt
+    # $PORT is assigned by Render; binding anywhere else fails health checks.
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+
+      - key: MONGODB_URL
+        sync: false
+      - key: DATABASE_NAME
+        value: turnpike_analyst
+      - key: SECRET_KEY
+        # Render generates one on first deploy; it stays stable afterwards.
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+
+      # The deployed Vercel URLs. The API answers credentialed requests, so
+      # this list stays exact — never a wildcard.
+      - key: CORS_ORIGINS
+        sync: false
+
+      # --- AI providers: tried in order, first one that answers wins ---
+      - key: AI_REVIEW_PROVIDERS
+        value: openrouter,groq,openai,gemini
+      # Gemini is deliberately absent here. It answers in 230-290s on the
+      # free tier, and a visitor waiting five minutes for a chat reply is
+      # worse than being told the assistant is unavailable.
+      - key: CHATBOT_PROVIDERS
+        value: groq,openrouter,openai
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+      # --- Media. Required here: Render's disk does not survive a deploy,
+      # so certificates and diagrams must not be written locally. ---
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      # Raises the GitHub read limit from 60/hour to 5000/hour.
+      - key: GITHUB_TOKEN
+        sync: false
+
+      # Google sign-in. Paste the whole service account JSON as one value;
+      # the app writes it to disk at startup (see app/main.py).
+      - key: FIREBASE_CREDENTIALS_JSON
+        sync: false
+
+      # --- First administrator -------------------------------------------
+      # Required on a fresh database: without these there is no way to sign
+      # in to the console. Seeded once, only when no administrator exists;
+      # afterwards these values are ignored and credentials change from
+      # Administration -> Sign-in & Security.
+      - key: SUPER_ADMIN_EMAIL
+        sync: false
+      - key: SUPER_ADMIN_PASSWORD
+        sync: false
+      - key: SUPER_ADMIN_NAME
+        value: Super Administrator
+
+      # --- Model overrides -------------------------------------------------
+      # Blank means each provider uses its own default. A value here applies
+      # to the FIRST provider in that chain only, because model names are
+      # vendor-specific.
+      - key: AI_REVIEW_MODEL
+        value: ""
+      - key: CHATBOT_MODEL
+        value: ""
+
+      # Local paths, used only when Cloudinary is not configured. On Render
+      # the filesystem is ephemeral, so nothing durable should land here.
+      - key: UPLOAD_DIR
+        value: uploads
+      - key: PRIVATE_UPLOAD_DIR
+        value: private_uploads
+      - key: FIREBASE_CREDENTIALS_PATH
+        value: firebase_service_account.json
